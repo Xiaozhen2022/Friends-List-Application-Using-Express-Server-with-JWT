@@ -53,6 +53,16 @@ app.use("/friends", function auth(req,res,next){
 app.post("/login", (req,res) => {
   const username = req.body.username;
   const password = req.body.password;
+//   const authenticatedUser = (username,password)=>{
+//     let validusers = users.filter((user)=>{
+//       return (user.username === username && user.password === password)
+//     });
+//     if(validusers.length > 0){
+//       return true;
+//     } else {
+//       return false;
+//     }
+//   }
 
   if (!username || !password) {
       return res.status(404).json({message: "Error logging in"});
@@ -61,7 +71,7 @@ app.post("/login", (req,res) => {
   if (authenticatedUser(username,password)) {
     let accessToken = jwt.sign({
       data: password
-    }, 'access', { expiresIn: 60 * 60 });
+    }, 'access', { expiresIn: 60 });
 
     req.session.authorization = {
       accessToken,username
@@ -75,6 +85,16 @@ app.post("/login", (req,res) => {
 app.post("/register", (req,res) => {
   const username = req.body.username;
   const password = req.body.password;
+  const doesExist = (username)=>{
+    let userswithsamename = users.filter((user)=>{
+        return user.username===username
+    });
+    if (userswithsamename.length > 0){
+        return true;
+    }else {
+        return false;
+    }
+  }
 
   if (username && password) {
     if (!doesExist(username)) { 
